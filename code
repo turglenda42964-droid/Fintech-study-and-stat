@@ -1,1 +1,51 @@
+import pandas as pd 
+import numpy as np 
+import warnings
+warnings.filterwarnings("ignore")#让界面干净一点
+#1.加载数据
+f_r=pd.read_csv('/Users/chenguanyu/Desktop/AI/小模型水印项目学习/data.csv')
+print(f"从/Users/chenguanyu/Desktop/AI/小模型水印项目/data.csv加载成功")
+#2.数据基本状况
+print("数据探索")
+print("="*50)
+print(f"数据形状：{f_r.shape[0]}行*{f_r.shape[1]}列")#获取行数和列数的手法
+print(f"{list(f_r.columns)}")#转化为python列表
+print(f_r.head())#显示前5行数据
+print(f_r.dtypes)#了解数据类型
+f_r.info()
+print(f_r.info())
+#3.处理缺失值
+print ("="*50)
+m_values=f_r.isnull().sum()#基本格式是数据名.函数 这两个函数是看缺失值和统计数量的
+m_percent=(m_values/len(f_r))*100
+m_f_r = pd.DataFrame({
+    '缺失数量': m_values,  # 列名: 数据
+    '缺失比例': m_percent.round(3)  # 列名: 数据
+})
+print(f"m_values 类型: {type(m_values)}")
+print(f"m_values 数据类型: {m_values.dtype}")
+print(f"m_percent 类型: {type(m_percent)}")
+m_t = m_f_r[m_f_r['缺失数量'] > 0] 
+if len(m_t)>0:
+    print(m_t)
+else:
+        print('无缺失值')
+#4.处理重复值
+duplicate_m=f_r.duplicated()
+print(duplicate_m.head(10))
+duplicate_c=duplicate_m.sum()
+print(f"发现{duplicate_c}个完全重复的行")
+if duplicate_c>0:
+    all_d=f_r[f_r.duplicated(keep=False)]
+    print(f"共{len(all_d)}重复")
+    print(all_d.head())
+b_dedup=len(f_r)
+f_r_dedup=f_r.drop_duplicates()
+after_dedup=len(f_r_dedup)
+row_removed=b_dedup-after_dedup
+print(f"{after_dedup}")
+print(f"{row_removed}")
+#5.文本清洗
+print("="*50)
+text_columns=[col for col in f_r.columns if f_r[col].dtype=="object" ]
 
